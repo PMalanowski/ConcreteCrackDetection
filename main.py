@@ -11,15 +11,15 @@ from numpy.lib.stride_tricks import sliding_window_view
 
 # 1. METODA
 # 'OTSU' lub 'ADAPTIVE'
-ALGORITHM_TYPE = 'ADAPTIVE' 
+ALGORITHM_TYPE = 'OTSU' 
 
 # 2. ODSZUMIANIE WSTĘPNE (Filtr Medianowy)
 USE_DENOISING = True       
-MEDIAN_KERNEL_SIZE = 5    
+MEDIAN_KERNEL_SIZE = 7    
 
 # 3. PARAMETRY ADAPTACYJNE
-ADAPTIVE_WINDOW_SIZE = 55  
-ADAPTIVE_SENSITIVITY = 0.05 
+ADAPTIVE_WINDOW_SIZE = 75  
+ADAPTIVE_SENSITIVITY = 0.10 
 
 # 4. POST-PROCESSING (Morfologia) - NOWOŚĆ!
 USE_MORPHOLOGY = True      # Czy czyścić maskę wynikową?
@@ -41,7 +41,7 @@ def load_image_gray(path):
 def load_mask(path):
     img = Image.open(path).convert('L')
     arr = np.array(img, dtype=np.float32)
-    return (arr > 127).astype(np.int8)
+    return (arr > 20).astype(np.int8)
 
 # --- ODSZUMIANIE ---
 def apply_median_filter(image, size=3):
@@ -153,8 +153,8 @@ def calculate_metrics(pred, true):
 # --- MAIN ---
 def main():
     base_dir = os.getcwd()
-    images_dir = os.path.join(base_dir, 'dataset', 'images')
-    masks_dir = os.path.join(base_dir, 'dataset', 'masks')
+    images_dir = os.path.join(base_dir, 'dataset2', 'cracks')
+    masks_dir = os.path.join(base_dir, 'dataset2', 'labels')
     files = glob.glob(os.path.join(images_dir, '*.jpg'))
     
     if not files: return print("Brak plików jpg!")
